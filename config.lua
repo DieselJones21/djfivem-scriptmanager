@@ -1,22 +1,20 @@
 Config = {}
 
 --[[
-    LICENSE (required)
+    ACCESS (required)
 
-    This key is read on the SERVER only. Do not add config.lua to the `files`
-    list. Generate a key with:
+    Only these Discord user IDs can open the tablet. Read on the SERVER only.
+    Enable Discord in the FiveM server and have staff link Discord to FiveM.
 
-      python3 tools/generate_license.py
-      (or from the live console) djsm_makelicense
-
-    Paste the printed key below. An empty / placeholder key stops the tablet.
+    Right-click the user in Discord → Copy User ID (Developer Mode on).
+    Snowflakes or discord:123 work. An empty list locks the tablet for everyone.
 ]]
 if IsDuplicityVersion() then
-    Config.License = 'PUT-YOUR-LICENSE-HERE'
+    Config.DiscordIds = {
+        -- '123456789012345678',
+        -- 'discord:123456789012345678',
+    }
 end
-
--- When true, the key is tied to this machine's sv_licenseKey convar.
-Config.BindLicenseToServer = false
 
 -- Open the tablet
 Config.Command = 'djadmin'
@@ -24,13 +22,6 @@ Config.Keybind = 'F10'
 Config.KeybindDescription = 'Open DJ FiveM Script Manager'
 Config.CloseKey = 'Escape'
 
--- ACE: add_ace group.admin djmanager.admin allow
-Config.AdminAce = 'djmanager.admin'
-Config.AdminIdentifiers = {
-    -- 'license:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-}
-Config.QBAdminPermissions = { 'god', 'admin' }
-Config.ESXAdminGroups = { 'admin', 'superadmin', 'god' }
 Config.Framework = 'auto' -- auto | esx | qb | qbx | standalone
 
 -- Resource start / stop / restart from the tablet (allowlisted catalog only)
@@ -133,7 +124,9 @@ Config.Theme = {
 }
 
 Config.Locale = {
-    no_license = 'Script Manager is not licensed. Set Config.License.',
+    empty_allowlist = 'Script Manager has no Discord IDs in config.lua.',
+    no_discord = 'Your Discord is not linked to FiveM.',
+    not_allowed = 'Your Discord ID is not on the Script Manager list.',
     no_permission = 'You do not have access to Script Manager.',
     opened = 'Script Manager opened',
     closed = 'Script Manager closed',

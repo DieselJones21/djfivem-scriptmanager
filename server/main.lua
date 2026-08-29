@@ -188,7 +188,7 @@ local function snapshot(src)
             name = Permissions.GetName(src),
         },
         theme = Utils.BuildTheme(Config.Theme),
-        license = License.PublicStatus(),
+        access = Access.PublicStatus(),
         stats = statsFrom(scripts),
         scripts = scripts,
         players = onlinePlayers(),
@@ -200,15 +200,11 @@ local function snapshot(src)
 end
 
 local function guard(src)
-    if not License.IsValid() then
+    if not Access.IsAllowed(src) then
+        local reason = Access.DenyReason(src)
         noteAuthFail(src)
-        audit(src, 'auth', 'license', false)
-        return false, 'no_license'
-    end
-    if not Permissions.IsAdmin(src) then
-        noteAuthFail(src)
-        audit(src, 'auth', 'permission', false)
-        return false, 'no_permission'
+        audit(src, 'auth', reason, false)
+        return false, reason
     end
     if not punch(src) then
         audit(src, 'auth', 'rate', false)
@@ -314,7 +310,7 @@ local function runResource(src, script, control)
 end
 
 CreateThread(function()
-    License.Check()
+    Access.Load()
     lib.callback.register('djsm:open', function(source)
         local ok, reason = guard(source)
         if not ok then
@@ -401,35 +397,14 @@ AddEventHandler('onResourceStart', function(res)
         return
     end
 
-    if not License.Check() then
-        print('^1[djfivem-scriptmanager] LICENSE INVALID: ' .. tostring(License.reason) .. '^7')
-        print('^1[djfivem-scriptmanager] Set Config.License in config.lua. Generate a key with tools/generate_license.py or djsm_makelicense.^7')
-        print('^1[djfivem-scriptmanager] Admin tablet is disabled until a valid license is set.^7')
+    if not Access.Load() then
+        print('^1[djfivem-scriptmanager] No Discord IDs in Config.DiscordIds. Tablet is locked.^7')
+        print('^1[djfivem-scriptmanager] Add staff Discord user IDs in config.lua and restart.^7')
         return
     end
 
-    print('^2[djfivem-scriptmanager] License valid. Tablet ready. Command /' .. Config.Command .. '^7')
+    print(('^2[djfivem-scriptmanager] Discord access ready (%s IDs). Command /%s^7'):format(Access.count, Config.Command))
 end)
-
-RegisterCommand('djsm_makelicense', function(src)
-    if src ~= 0 then
-        return
-    end
-    local bind = '*'
-    if Config.BindLicenseToServer then
-        bind = License.ServerBindValue()
-        if not bind then
-            print('[djfivem-scriptmanager] sv_licenseKey is empty; cannot bind this key.')
-            return
-        end
-    end
-    local key = License.MakeKey(bind)
-    print('[djfivem-scriptmanager] Paste this into Config.License:')
-    print('  ' .. key)
-    if bind ~= '*' then
-        print('[djfivem-scriptmanager] Bound to this server license key.')
-    end
-end, true)
 
 AddEventHandler('playerDropped', function()
     local src = source

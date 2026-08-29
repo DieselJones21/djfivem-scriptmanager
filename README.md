@@ -1,6 +1,6 @@
 # DJ FiveM Script Manager
 
-Licensed in-game **admin tablet** for every DJ FiveM resource. One UI, allowlisted commands, resource start/stop/restart, and a license key in `config.lua`.
+In-game **admin tablet** for every DJ FiveM resource. One UI, allowlisted commands, resource start/stop/restart. Access is a **Discord user ID list** in `config.lua` — not a license key.
 
 The tablet chrome matches the Lumina DJ Booth OS (bezel, notch, sidebar glow, bottom transport). Colors are **not hardcoded** — they come from `Config.Theme`.
 
@@ -8,40 +8,26 @@ The tablet chrome matches the Lumina DJ Booth OS (bezel, notch, sidebar glow, bo
 
 1. Place this folder in `resources/[djfivem]/djfivem-scriptmanager`
 2. `ensure ox_lib` then `ensure djfivem-scriptmanager` in `server.cfg`
-3. Copy ACE from `install/permissions.cfg`
-4. Generate a license and paste it into `config.lua`
+3. Enable Discord identifiers on the FiveM server (`set discord_token` / Discord as a connection method)
+4. Put staff Discord IDs in `config.lua`
 
-```bash
-python3 tools/generate_license.py
-```
-
-Or from the live **server console** (not in-game chat):
-
-```
-djsm_makelicense
-```
-
-Then:
+Turn on Discord Developer Mode, right-click a user, **Copy User ID**:
 
 ```lua
-Config.License = 'DJSM-XXXX-XXXX-XXXX-XXXX'
+Config.DiscordIds = {
+    '123456789012345678',
+    'discord:987654321098765432',
+}
 ```
 
-Restart the resource. An empty or placeholder key **disables the tablet**.
-
-The stock `License.ProductSecret` accepts this example key (rotate the secret before you ship):
-
-```lua
-Config.License = 'DJSM-A7F3-C91B-CF54-1C80'
-```
+An empty list **locks the tablet for everyone**. Restart the resource after edits. Staff must launch FiveM with Discord linked so the `discord:` identifier exists.
 
 ## Open
 
 - Command: `/djadmin` (change with `Config.Command`)
 - Default key: `F10`
-- ACE: `djmanager.admin`
 
-Only licensed **and** ACE/framework admins can open it. The NUI cannot grant access by itself.
+Only Discord IDs on that list can open it. The NUI cannot grant access by itself. ACE / QB / ESX admin groups are **not** enough.
 
 ## Theme
 
@@ -85,27 +71,13 @@ Add renamed resources with `Config.ExtraResources`.
 
 ## Anti-exploit
 
-- License HMAC is verified **server-side** (`server/license.lua`). The key is assigned only inside `IsDuplicityVersion()` so the client does not receive it.
-- Every open / refresh / run callback checks license + ACE / QB / QBX / ESX admin + identifier allowlist.
+- Discord IDs are checked **server-side** on every open / refresh / run. The allowlist is assigned only inside `IsDuplicityVersion()` so the client never receives it.
+- Players with no `discord:` identifier are denied even if they trigger the NUI.
 - Rate limit (`Config.RateLimit`) and optional `Config.DropOnExploit`.
 - Resource control cannot target this manager itself.
 - Command templates fill `{player}` / `{amount}` / `{species}` after type checks. Player ids must be online. Select fields must match the option list.
 - Original resource ACE still applies because commands run as the admin via `ExecuteCommand`, not as console.
 - Optional Discord audit: `Config.AuditWebhook`.
-
-This is not FiveM escrow. If you sell the script, change `License.ProductSecret` in `server/license.lua`, generate new keys, and escrow that file. A public GitHub copy of the secret can mint keys — rotate it before distribution.
-
-## Bind to one server
-
-```lua
-Config.BindLicenseToServer = true
-```
-
-```bash
-python3 tools/generate_license.py --bind YOUR_SV_LICENSE_KEY
-```
-
-The key then only validates on a machine whose `sv_licenseKey` matches.
 
 ## Preview
 

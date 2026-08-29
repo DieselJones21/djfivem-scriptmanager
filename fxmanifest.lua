@@ -4,8 +4,8 @@ lua54 'yes'
 
 name 'djfivem-scriptmanager'
 author 'DieselJones21'
-description 'Licensed admin tablet for every DJ FiveM script — resource control, allowlisted commands, config colors'
-version '1.0.0'
+description 'Discord-locked admin tablet for every DJ FiveM script — resource control, allowlisted commands, config colors'
+version '1.2.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -19,8 +19,7 @@ client_scripts {
 }
 
 server_scripts {
-    'server/sha256.lua',
-    'server/license.lua',
+    'server/access.lua',
     'server/permissions.lua',
     'server/main.lua',
 }

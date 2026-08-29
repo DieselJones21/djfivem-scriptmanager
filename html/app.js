@@ -186,7 +186,7 @@
                 <div>
                     <p class="eyebrow">Command center</p>
                     <h1>Home</h1>
-                    <p>Every DJ FiveM script under one licensed tablet.</p>
+                    <p>Every DJ FiveM script under one Discord-locked tablet.</p>
                 </div>
             </div>
             <div class="stats">
@@ -457,11 +457,13 @@
     function applyPayload(payload) {
         state.payload = payload;
         applyTheme(payload.theme);
-        const pill = $('licensePill');
-        if (payload.license && payload.license.valid) {
-            pill.textContent = payload.license.bound ? 'Bound license' : 'Licensed';
-        } else {
-            pill.textContent = 'Unlicensed';
+        const pill = $('accessPill');
+        if (pill) {
+            if (payload.access && payload.access.ready) {
+                pill.textContent = 'Discord';
+            } else {
+                pill.textContent = 'Locked';
+            }
         }
         if (!state.selectedId && payload.scripts && payload.scripts[0]) {
             state.selectedId = payload.scripts[0].id;
@@ -596,7 +598,7 @@
                 onAccent: '#111111',
                 glow: '#e8e8e8',
             },
-            license: { valid: true, bound: false },
+            access: { ready: true, via: 'discord' },
             stats: { installed: 16, running: 11, stopped: 5, missing: 2, players: 3 },
             players: [
                 { id: 1, name: 'Diesel' },
