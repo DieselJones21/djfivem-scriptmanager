@@ -36,16 +36,67 @@ function Utils.HexToRgb(hex)
     return tonumber(hex:sub(1, 2), 16) or 225, tonumber(hex:sub(3, 4), 16) or 6, tonumber(hex:sub(5, 6), 16) or 0
 end
 
+function Utils.LinearGradient(angle, colors)
+    angle = tonumber(angle) or 90
+    if type(colors) ~= 'table' or #colors == 0 then
+        colors = { '#e10600' }
+    end
+    local parts = {}
+    local last = math.max(#colors - 1, 1)
+    for i = 1, #colors do
+        local pct = math.floor(((i - 1) / last) * 100 + 0.5)
+        parts[#parts + 1] = ('%s %s%%'):format(colors[i], pct)
+    end
+    return ('linear-gradient(%sdeg, %s)'):format(angle, table.concat(parts, ', '))
+end
+
+function Utils.ResolveGradient(theme)
+    theme = theme or Config.Theme
+    local grad = theme.gradient or {}
+    local name = theme.preset
+    if type(name) == 'string' and name ~= '' and theme.Presets and theme.Presets[name] then
+        grad = theme.Presets[name]
+    end
+    local colors = grad.colors or { grad.ember, grad.accent, grad.crimson }
+    local cleaned = {}
+    for i = 1, #colors do
+        if type(colors[i]) == 'string' and colors[i] ~= '' then
+            cleaned[#cleaned + 1] = colors[i]
+        end
+    end
+    if #cleaned == 0 then
+        cleaned = { '#ff6a2b', '#e10600', '#7a00c8' }
+    end
+    local glow = grad.glow or cleaned[math.max(1, math.ceil(#cleaned / 2))]
+    return {
+        angle = grad.angle or 90,
+        colors = cleaned,
+        inkOnAccent = grad.inkOnAccent or '#ffffff',
+        glow = glow,
+        preset = (type(name) == 'string' and name ~= '') and name or 'custom',
+    }
+end
+
 function Utils.BuildTheme(theme)
     theme = theme or Config.Theme
-    local r, g, b = Utils.HexToRgb(theme.accent)
+    local grad = Utils.ResolveGradient(theme)
+    local r, g, b = Utils.HexToRgb(grad.glow)
+    local startColor = grad.colors[1]
+    local midColor = grad.colors[math.max(1, math.ceil(#grad.colors / 2))]
+    local endColor = grad.colors[#grad.colors]
     return {
         appName = theme.appName or 'DJ FiveM',
-        appTag = theme.appTag or 'Script OS',
-        accent = theme.accent,
-        accentHot = theme.accentHot,
-        ember = theme.ember,
-        crimson = theme.crimson,
+        appTag = theme.appTag or 'Scripts',
+        logo = theme.logo or 'images/logo.png',
+        preset = grad.preset,
+        gradientAngle = grad.angle,
+        gradientColors = grad.colors,
+        onAccent = grad.inkOnAccent,
+        glow = grad.glow,
+        accent = midColor,
+        accentHot = startColor,
+        ember = startColor,
+        crimson = endColor,
         ink = theme.ink,
         muted = theme.muted,
         screen = theme.screen,
@@ -59,6 +110,9 @@ function Utils.BuildTheme(theme)
         bezelMid = theme.bezelMid,
         bezelBottom = theme.bezelBottom,
         accentRgb = ('%s, %s, %s'):format(r, g, b),
+        accentFill = Utils.LinearGradient(grad.angle, grad.colors),
+        accentFillV = Utils.LinearGradient(180, grad.colors),
+        presets = theme.Presets,
     }
 end
 

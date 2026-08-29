@@ -45,17 +45,33 @@ Only licensed **and** ACE/framework admins can open it. The NUI cannot grant acc
 
 ## Theme
 
-Edit `Config.Theme` in `config.lua`. Every value is pushed into CSS variables when the tablet opens:
+The DJ FiveM Scripts logo is baked into the tablet (sidebar + home lockup). Swap the file at `html/images/logo.png` or change `Config.Theme.logo`.
+
+Accents are **multi-stop gradients**, not a single solid. Pick a named blend or write your own:
+
+```lua
+Config.Theme.preset = 'chrome' -- chrome | lava | vice | gold | ice | sunset
+
+-- Or a custom blend:
+Config.Theme.preset = ''
+Config.Theme.gradient = {
+    angle = 135,
+    colors = { '#00e5ff', '#7a5cff', '#ff2bd6' },
+    inkOnAccent = '#ffffff', -- text/icons sitting on the gradient
+    glow = '#7a5cff',
+}
+```
 
 | Key | What it tints |
 | --- | --- |
-| `accent` / `accentHot` / `ember` / `crimson` | Buttons, active nav, glows, progress |
+| `preset` / `gradient.colors` | Buttons, active nav, progress, glows |
+| `gradient.inkOnAccent` | Text on those fills (dark on chrome/gold) |
 | `screen` / `paper` / `card` / `panel` | Surfaces |
 | `ink` / `muted` / `line` | Text and borders |
 | `bezelTop` / `bezelMid` / `bezelBottom` | Tablet chassis |
-| `appName` / `appTag` | Sidebar brand |
+| `appName` / `appTag` / `logo` | Sidebar brand |
 
-Open `html/index.html` in a browser to preview. The top chips swap Red / Blue / Gold / Mint without restarting FiveM.
+Open `html/index.html` in a browser to preview. The top chips swap Chrome / Lava / Vice / Gold / Ice / Sunset without restarting FiveM.
 
 ## What it controls
 

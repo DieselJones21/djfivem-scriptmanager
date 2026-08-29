@@ -59,18 +59,65 @@ Config.Notify = {
 }
 
 --[[
-    Tablet look. Every color is pushed into CSS variables when the UI opens,
-    so you can retheme without editing html/style.css.
+    Tablet look. Values are pushed into CSS variables when the UI opens.
 
-    The default palette matches the Lumina tablet (dark bezel, red glow).
+    `preset` picks a named multi-stop gradient from Config.Theme.Presets.
+    Leave preset = '' and fill `gradient` yourself for a fully custom blend.
+    `inkOnAccent` is the text/icon color sitting on gradient fills
+    (use a dark color on chrome/gold, white on neon).
 ]]
 Config.Theme = {
     appName = 'DJ FiveM',
-    appTag = 'Script OS',
-    accent = '#e10600',
-    accentHot = '#ff3b1f',
-    ember = '#ff6a2b',
-    crimson = '#b30000',
+    appTag = 'Scripts',
+    logo = 'images/logo.png',
+    preset = 'chrome', -- chrome | lava | vice | gold | ice | sunset | ''
+
+    gradient = {
+        angle = 125,
+        colors = { '#f8f8f8', '#c9c9c9', '#8d8d8d', '#ffffff', '#4c4c4c' },
+        inkOnAccent = '#111111',
+        glow = '#d8d8d8',
+    },
+
+    Presets = {
+        chrome = {
+            angle = 125,
+            colors = { '#ffffff', '#d4d4d4', '#8a8a8a', '#f4f4f4', '#3a3a3a' },
+            inkOnAccent = '#111111',
+            glow = '#e8e8e8',
+        },
+        lava = {
+            angle = 90,
+            colors = { '#ffb347', '#e10600', '#7a00c8' },
+            inkOnAccent = '#ffffff',
+            glow = '#e10600',
+        },
+        vice = {
+            angle = 110,
+            colors = { '#ff2bd6', '#7a5cff', '#00e5ff' },
+            inkOnAccent = '#ffffff',
+            glow = '#7a5cff',
+        },
+        gold = {
+            angle = 120,
+            colors = { '#fff3c4', '#f5c542', '#c4841d', '#7a4a00' },
+            inkOnAccent = '#1a1204',
+            glow = '#f5c542',
+        },
+        ice = {
+            angle = 100,
+            colors = { '#d9fbff', '#5ad0ff', '#2563eb', '#0b1b4a' },
+            inkOnAccent = '#ffffff',
+            glow = '#5ad0ff',
+        },
+        sunset = {
+            angle = 95,
+            colors = { '#ffe08a', '#ff6a2b', '#e10600', '#6b0030' },
+            inkOnAccent = '#ffffff',
+            glow = '#ff6a2b',
+        },
+    },
+
     ink = '#f5f5f5',
     muted = '#8a8a8a',
     screen = '#0b0b0b',

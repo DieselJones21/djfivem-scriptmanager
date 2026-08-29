@@ -47,6 +47,31 @@
         return icons[name] || icons.box;
     }
 
+    function hexToRgb(hex) {
+        const h = String(hex || '').replace('#', '');
+        if (h.length !== 6) return '232, 232, 232';
+        return [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16)).join(', ');
+    }
+
+    function gradientFrom(theme) {
+        const colors = (theme.gradientColors && theme.gradientColors.length)
+            ? theme.gradientColors
+            : [theme.ember, theme.accent, theme.crimson].filter(Boolean);
+        const list = colors.length ? colors : ['#ffffff', '#8a8a8a', '#3a3a3a'];
+        const angle = theme.gradientAngle || 90;
+        const stops = list.map((c, i) => `${c} ${Math.round((i / Math.max(list.length - 1, 1)) * 100)}%`).join(', ');
+        const glow = theme.glow || list[Math.floor(list.length / 2)] || list[0];
+        return {
+            fill: `linear-gradient(${angle}deg, ${stops})`,
+            fillV: `linear-gradient(180deg, ${stops})`,
+            rgb: theme.accentRgb || hexToRgb(glow),
+            ink: theme.onAccent || '#ffffff',
+            start: list[0],
+            mid: list[Math.floor(list.length / 2)],
+            end: list[list.length - 1],
+        };
+    }
+
     function applyTheme(theme) {
         if (!theme) return;
         const root = document.documentElement.style;
@@ -60,10 +85,6 @@
             panel: '--panel',
             card: '--card',
             card2: '--card-2',
-            accent: '--red',
-            accentHot: '--red-hot',
-            ember: '--ember',
-            crimson: '--crimson',
             bezelTop: '--bezel-top',
             bezelMid: '--bezel-mid',
             bezelBottom: '--bezel-bottom',
@@ -71,9 +92,19 @@
         Object.keys(map).forEach((key) => {
             if (theme[key]) root.setProperty(map[key], theme[key]);
         });
-        if (theme.accentRgb) root.setProperty('--accent-rgb', theme.accentRgb);
+        const g = gradientFrom(theme);
+        root.setProperty('--accent', theme.accentFill || g.fill);
+        root.setProperty('--accent-v', theme.accentFillV || g.fillV);
+        root.setProperty('--accent-rgb', g.rgb);
+        root.setProperty('--on-accent', g.ink);
+        root.setProperty('--red', g.mid);
+        root.setProperty('--red-hot', g.start);
+        root.setProperty('--ember', g.start);
+        root.setProperty('--crimson', g.end);
         if (theme.appName) $('appName').textContent = theme.appName;
         if (theme.appTag) $('appTag').textContent = theme.appTag;
+        const logo = $('brandLogo');
+        if (logo && theme.logo) logo.src = theme.logo;
     }
 
     function nui(name, data) {
@@ -144,7 +175,13 @@
         const p = state.payload;
         const stats = p.stats || {};
         const scripts = p.scripts || [];
+        const logo = (p.theme && p.theme.logo) || 'images/logo.png';
+        const preset = (p.theme && p.theme.preset) || 'custom';
         $('page').innerHTML = `
+            <div class="lockup">
+                <img src="${logo}" alt="DJ FiveM Scripts" />
+                <div class="theme-strip" title="${preset} gradient"></div>
+            </div>
             <div class="page-head">
                 <div>
                     <p class="eyebrow">Command center</p>
@@ -486,17 +523,62 @@
     });
 
     const previewThemes = {
-        red: { accent: '#e10600', accentHot: '#ff3b1f', ember: '#ff6a2b', crimson: '#b30000', accentRgb: '225, 6, 0' },
-        blue: { accent: '#2563eb', accentHot: '#3b82f6', ember: '#60a5fa', crimson: '#1e3a8a', accentRgb: '37, 99, 235' },
-        gold: { accent: '#d4a017', accentHot: '#f5c542', ember: '#ffe08a', crimson: '#8a5a00', accentRgb: '212, 160, 23' },
-        mint: { accent: '#0f9f7a', accentHot: '#14c79a', ember: '#5ee0be', crimson: '#08664d', accentRgb: '15, 159, 122' },
+        chrome: {
+            gradientAngle: 125,
+            gradientColors: ['#ffffff', '#d4d4d4', '#8a8a8a', '#f4f4f4', '#3a3a3a'],
+            onAccent: '#111111',
+            glow: '#e8e8e8',
+            preset: 'chrome',
+        },
+        lava: {
+            gradientAngle: 90,
+            gradientColors: ['#ffb347', '#e10600', '#7a00c8'],
+            onAccent: '#ffffff',
+            glow: '#e10600',
+            preset: 'lava',
+        },
+        vice: {
+            gradientAngle: 110,
+            gradientColors: ['#ff2bd6', '#7a5cff', '#00e5ff'],
+            onAccent: '#ffffff',
+            glow: '#7a5cff',
+            preset: 'vice',
+        },
+        gold: {
+            gradientAngle: 120,
+            gradientColors: ['#fff3c4', '#f5c542', '#c4841d', '#7a4a00'],
+            onAccent: '#1a1204',
+            glow: '#f5c542',
+            preset: 'gold',
+        },
+        ice: {
+            gradientAngle: 100,
+            gradientColors: ['#d9fbff', '#5ad0ff', '#2563eb', '#0b1b4a'],
+            onAccent: '#ffffff',
+            glow: '#5ad0ff',
+            preset: 'ice',
+        },
+        sunset: {
+            gradientAngle: 95,
+            gradientColors: ['#ffe08a', '#ff6a2b', '#e10600', '#6b0030'],
+            onAccent: '#ffffff',
+            glow: '#ff6a2b',
+            preset: 'sunset',
+        },
     };
 
     $('previewBar').querySelectorAll('button').forEach((btn) => {
         btn.onclick = () => {
             $('previewBar').querySelectorAll('button').forEach((b) => b.classList.remove('active'));
             btn.classList.add('active');
-            applyTheme(Object.assign({}, (state.payload && state.payload.theme) || {}, previewThemes[btn.dataset.preview]));
+            const next = Object.assign({}, (state.payload && state.payload.theme) || {}, previewThemes[btn.dataset.preview]);
+            delete next.accentFill;
+            delete next.accentFillV;
+            applyTheme(next);
+            if (state.payload && state.payload.theme) {
+                state.payload.theme = next;
+            }
+            render();
         };
     });
 
@@ -506,12 +588,13 @@
             player: { id: 1, name: 'Diesel' },
             theme: {
                 appName: 'DJ FiveM',
-                appTag: 'Script OS',
-                accent: '#e10600',
-                accentHot: '#ff3b1f',
-                ember: '#ff6a2b',
-                crimson: '#b30000',
-                accentRgb: '225, 6, 0',
+                appTag: 'Scripts',
+                logo: 'images/logo.png',
+                preset: 'chrome',
+                gradientAngle: 125,
+                gradientColors: ['#ffffff', '#d4d4d4', '#8a8a8a', '#f4f4f4', '#3a3a3a'],
+                onAccent: '#111111',
+                glow: '#e8e8e8',
             },
             license: { valid: true, bound: false },
             stats: { installed: 16, running: 11, stopped: 5, missing: 2, players: 3 },
