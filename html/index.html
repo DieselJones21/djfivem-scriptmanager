@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DJ FiveM Script OS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@320;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        html, body { background: transparent !important; pointer-events: none; }
+        body:not(.fivem) { pointer-events: auto; }
+        #stage { display: none !important; }
+        #stage.is-open { display: grid !important; place-items: center; pointer-events: auto; }
+        #previewBar { display: none !important; }
+        #previewBar.is-open { display: flex !important; }
+    </style>
+</head>
+<body>
+    <div class="stage" id="stage" hidden>
+        <div class="preview-bar" id="previewBar" hidden>
+            <button data-preview="red" class="active">Red</button>
+            <button data-preview="blue">Blue</button>
+            <button data-preview="gold">Gold</button>
+            <button data-preview="mint">Mint</button>
+        </div>
+
+        <div class="tablet" id="tablet">
+            <div class="bezel">
+                <div class="notch">
+                    <span class="cam"></span>
+                    <span class="mic"></span>
+                </div>
+                <div class="screen" id="screen">
+                    <header class="status">
+                        <span id="clock">12:40</span>
+                        <span class="status-pills">
+                            <span>5G</span>
+                            <span class="battery" id="licensePill">Licensed</span>
+                            <button class="status-close" id="statusClose" type="button">Close</button>
+                        </span>
+                    </header>
+
+                    <div class="app" id="app">
+                        <aside class="sidebar">
+                            <div class="brand">
+                                <div class="logo" aria-hidden="true">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <div>
+                                    <strong id="appName">DJ FiveM</strong>
+                                    <small id="appTag">Script OS</small>
+                                </div>
+                            </div>
+                            <nav class="nav" id="nav"></nav>
+                            <div class="sidebar-card" id="statusCard">
+                                <p class="eyebrow">Active stack</p>
+                                <h3 id="stackName">No script selected</h3>
+                                <p id="stackMeta">Choose a DJ FiveM resource</p>
+                            </div>
+                        </aside>
+
+                        <main class="main">
+                            <section class="page" id="page"></section>
+                            <footer class="player" id="player"></footer>
+                        </main>
+                    </div>
+
+                    <div class="home-bar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-root" id="modalRoot"></div>
+    <div class="toast" id="toast" hidden></div>
+    <script src="app.js"></script>
+</body>
+</html>
