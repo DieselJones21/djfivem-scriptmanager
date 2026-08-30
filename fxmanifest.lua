@@ -4,8 +4,8 @@ lua54 'yes'
 
 name 'djfivem-scriptmanager'
 author 'DieselJones21'
-description 'Discord-locked admin tablet for every DJ FiveM script — resource control, allowlisted commands, config colors'
-version '1.2.0'
+description 'The 305 command tablet for DJ FiveM scripts plus JG mechanic, garage, and dealer tools'
+version '1.4.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
@@ -31,6 +31,7 @@ files {
     'html/style.css',
     'html/app.js',
     'html/images/*.png',
+    'html/images/*.jpg',
 }
 
 dependencies {

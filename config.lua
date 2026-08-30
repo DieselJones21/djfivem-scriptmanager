@@ -16,10 +16,10 @@ if IsDuplicityVersion() then
     }
 end
 
--- Open the tablet
-Config.Command = 'djadmin'
+-- Open the tablet. Not /djadmin — that stays the DJ Booth admin command.
+Config.Command = '305admin'
 Config.Keybind = 'F10'
-Config.KeybindDescription = 'Open DJ FiveM Script Manager'
+Config.KeybindDescription = 'Open The 305 Command OS'
 Config.CloseKey = 'Escape'
 
 Config.Framework = 'auto' -- auto | esx | qb | qbx | standalone
@@ -30,6 +30,12 @@ Config.AllowResourceControl = true
 -- Extra resource names that may appear besides the built-in DJ FiveM catalog
 Config.ExtraResources = {
     -- 'my-renamed-shops',
+}
+
+-- If you renamed a catalog resource, map catalog id or default folder → your folder
+Config.ResourceOverrides = {
+    -- ['jg-garages'] = 'jg-advancedgarages',
+    -- ['jg-mechanic'] = 'jg-mechanic',
 }
 
 Config.RateLimit = {
@@ -45,7 +51,7 @@ Config.DropOnExploit = false
 Config.AuditWebhook = ''
 
 Config.Notify = {
-    title = 'DJ Script Manager',
+    title = 'The 305',
     position = 'top-right',
 }
 
@@ -58,19 +64,27 @@ Config.Notify = {
     (use a dark color on chrome/gold, white on neon).
 ]]
 Config.Theme = {
-    appName = 'DJ FiveM',
-    appTag = 'Scripts',
+    appName = 'The 305',
+    appTag = 'Command OS',
     logo = 'images/logo.png',
-    preset = 'chrome', -- chrome | lava | vice | gold | ice | sunset | ''
+    banner = 'images/banner.jpg',
+    preset = 'vice305', -- vice305 | vice | chrome | lava | gold | ice | sunset | ''
+    cyan = '#00e5ff',
 
     gradient = {
-        angle = 125,
-        colors = { '#f8f8f8', '#c9c9c9', '#8d8d8d', '#ffffff', '#4c4c4c' },
-        inkOnAccent = '#111111',
-        glow = '#d8d8d8',
+        angle = 115,
+        colors = { '#ff4ad2', '#e11d8b', '#7a5cff', '#00e5ff' },
+        inkOnAccent = '#ffffff',
+        glow = '#ff2bd6',
     },
 
     Presets = {
+        vice305 = {
+            angle = 115,
+            colors = { '#ff4ad2', '#e11d8b', '#7a5cff', '#00e5ff' },
+            inkOnAccent = '#ffffff',
+            glow = '#ff2bd6',
+        },
         chrome = {
             angle = 125,
             colors = { '#ffffff', '#d4d4d4', '#8a8a8a', '#f4f4f4', '#3a3a3a' },
@@ -109,27 +123,27 @@ Config.Theme = {
         },
     },
 
-    ink = '#f5f5f5',
-    muted = '#8a8a8a',
-    screen = '#0b0b0b',
-    paper = '#161616',
-    wash = '#101010',
-    panel = '#141414',
-    card = '#1a1a1a',
-    card2 = '#202020',
-    line = 'rgba(255, 255, 255, 0.08)',
-    bezelTop = '#2a2a2a',
-    bezelMid = '#141414',
-    bezelBottom = '#0a0a0a',
+    ink = '#f6f3ff',
+    muted = '#9aa3c7',
+    screen = '#070614',
+    paper = '#0c1024',
+    wash = '#08081a',
+    panel = '#10162c',
+    card = '#141b34',
+    card2 = '#1b2444',
+    line = 'rgba(255, 74, 210, 0.16)',
+    bezelTop = '#2a1a33',
+    bezelMid = '#12091c',
+    bezelBottom = '#07040d',
 }
 
 Config.Locale = {
-    empty_allowlist = 'Script Manager has no Discord IDs in config.lua.',
+    empty_allowlist = 'The 305 Command OS has no Discord IDs in config.lua.',
     no_discord = 'Your Discord is not linked to FiveM.',
-    not_allowed = 'Your Discord ID is not on the Script Manager list.',
-    no_permission = 'You do not have access to Script Manager.',
-    opened = 'Script Manager opened',
-    closed = 'Script Manager closed',
+    not_allowed = 'Your Discord ID is not on The 305 Command OS list.',
+    no_permission = 'You do not have access to The 305 Command OS.',
+    opened = 'The 305 Command OS opened',
+    closed = 'The 305 Command OS closed',
     action_ok = 'Action sent',
     action_denied = 'Action blocked',
     missing_resource = 'That resource is not installed',

@@ -34,6 +34,8 @@ if built.preset ~= 'lava' then fail('preset ' .. tostring(built.preset)) end
 if built.accentFill:find('#7a00c8', 1, true) == nil then fail('missing purple stop') end
 if built.onAccent ~= '#ffffff' then fail('ink') end
 if built.logo ~= 'images/logo.png' then fail('logo') end
+if built.banner ~= 'images/banner.jpg' then fail('banner') end
+if built.appName ~= 'DJ FiveM' then fail('appName') end
 
 Config.Theme.preset = ''
 local custom = Utils.BuildTheme(Config.Theme)

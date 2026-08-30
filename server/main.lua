@@ -35,7 +35,7 @@ local function webhook(title, description, color)
         return
     end
     PerformHttpRequest(url, function() end, 'POST', json.encode({
-        username = 'DJ Script Manager',
+        username = 'The 305 Command OS',
         embeds = {{
             title = title,
             description = description,
@@ -73,7 +73,7 @@ local function audit(src, action, detail, ok)
 end
 
 local function allowedResource(name)
-    if CatalogByResource[name] then
+    if Utils.CatalogAllowsResource(name) then
         return true
     end
     for i = 1, #(Config.ExtraResources or {}) do
@@ -115,16 +115,18 @@ local function buildScripts()
     local scripts = {}
     for i = 1, #Catalog do
         local item = Catalog[i]
-        local state = resourceState(item.resource)
+        local resource = Utils.ResolveResource(item)
+        local state = resourceState(resource)
         scripts[#scripts + 1] = {
             id = item.id,
-            resource = item.resource,
+            resource = resource,
             label = item.label,
             tag = item.tag,
             category = item.category,
             icon = item.icon,
             description = item.description,
             locked = item.locked == true,
+            featured = item.featured == true,
             state = state,
             installed = state ~= 'missing',
             running = state == 'started',
@@ -259,6 +261,11 @@ local function fillCommand(template, fields, args)
                 return nil, 'bad_args'
             end
             token = value
+        elseif field.type == 'plate' then
+            token = Utils.SanitizePlate(raw)
+            if not token then
+                return nil, 'bad_args'
+            end
         else
             token = Utils.SanitizeToken(raw, field.max or 48)
             if not token then
@@ -276,36 +283,37 @@ local function fillCommand(template, fields, args)
 end
 
 local function runResource(src, script, control)
-    if script.locked or script.resource == RESOURCE then
+    local resource = Utils.ResolveResource(script)
+    if script.locked or resource == RESOURCE then
         return false, 'invalid_action'
     end
     if not Config.AllowResourceControl then
         return false, 'resource_busy'
     end
-    if not allowedResource(script.resource) then
+    if not allowedResource(resource) then
         return false, 'invalid_action'
     end
 
-    local state = resourceState(script.resource)
+    local state = resourceState(resource)
     if control ~= 'stop' and state == 'missing' then
         return false, 'missing_resource'
     end
 
     if control == 'start' then
-        StartResource(script.resource)
+        StartResource(resource)
     elseif control == 'stop' then
-        StopResource(script.resource)
+        StopResource(resource)
     elseif control == 'restart' then
         if state == 'started' then
-            StopResource(script.resource)
+            StopResource(resource)
             Wait(350)
         end
-        StartResource(script.resource)
+        StartResource(resource)
     else
         return false, 'invalid_action'
     end
 
-    audit(src, 'resource.' .. control, script.resource, true)
+    audit(src, 'resource.' .. control, resource, true)
     return true
 end
 
