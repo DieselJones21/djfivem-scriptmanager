@@ -505,8 +505,15 @@ html, body {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
 }
-.panel { padding: 14px; min-height: 280px; }
+.panel {
+  padding: 14px;
+  min-height: 280px;
+  max-height: 540px;
+  display: flex;
+  flex-direction: column;
+}
 .panel-head {
   display: flex;
   align-items: flex-start;
@@ -515,7 +522,7 @@ html, body {
 }
 .panel-head h3 { margin: 0; font-size: 16px; }
 .panel-head p { margin: 4px 0 0; color: var(--muted); font-size: 11px; }
-.cmd-list { display: grid; gap: 8px; }
+.cmd-list { display: grid; gap: 8px; overflow: auto; min-height: 0; }
 .cmd {
   width: 100%;
   text-align: left;
