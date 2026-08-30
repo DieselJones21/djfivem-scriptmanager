@@ -28,6 +28,14 @@ function Utils.SanitizeToken(value, maxLen)
     return Utils.Trim(value)
 end
 
+function Utils.SanitizePlate(value)
+    value = Utils.Trim(value):upper():gsub('%s+', '')
+    if value == '' or #value > 12 or not value:match('^[%w]+$') then
+        return nil
+    end
+    return value
+end
+
 function Utils.HexToRgb(hex)
     hex = tostring(hex or ''):gsub('#', '')
     if #hex ~= 6 then
@@ -85,9 +93,11 @@ function Utils.BuildTheme(theme)
     local midColor = grad.colors[math.max(1, math.ceil(#grad.colors / 2))]
     local endColor = grad.colors[#grad.colors]
     return {
-        appName = theme.appName or 'DJ FiveM',
-        appTag = theme.appTag or 'Scripts',
+        appName = theme.appName or 'The 305',
+        appTag = theme.appTag or 'Command OS',
         logo = theme.logo or 'images/logo.png',
+        banner = theme.banner or 'images/banner.jpg',
+        cyan = theme.cyan or endColor,
         preset = grad.preset,
         gradientAngle = grad.angle,
         gradientColors = grad.colors,
@@ -114,6 +124,59 @@ function Utils.BuildTheme(theme)
         accentFillV = Utils.LinearGradient(180, grad.colors),
         presets = theme.Presets,
     }
+end
+
+function Utils.ResolveResource(item)
+    if type(item) == 'string' then
+        item = { resource = item }
+    end
+    if type(item) ~= 'table' or type(item.resource) ~= 'string' then
+        return nil
+    end
+    local overrides = Config and Config.ResourceOverrides
+    local override = overrides and (overrides[item.id] or overrides[item.resource])
+    if type(override) == 'string' and override ~= '' then
+        return override
+    end
+    if GetResourceState and GetResourceState(item.resource) ~= 'missing' then
+        return item.resource
+    end
+    if type(item.alts) == 'table' then
+        for i = 1, #item.alts do
+            local alt = item.alts[i]
+            if type(alt) == 'string' and GetResourceState and GetResourceState(alt) ~= 'missing' then
+                return alt
+            end
+        end
+    end
+    return item.resource
+end
+
+function Utils.CatalogAllowsResource(name)
+    if type(name) ~= 'string' or name == '' then
+        return false
+    end
+    if CatalogByResource and CatalogByResource[name] then
+        return true
+    end
+    for i = 1, #Catalog do
+        local item = Catalog[i]
+        if item.resource == name then
+            return true
+        end
+        if type(item.alts) == 'table' then
+            for a = 1, #item.alts do
+                if item.alts[a] == name then
+                    return true
+                end
+            end
+        end
+        local overrides = Config and Config.ResourceOverrides
+        if overrides and (overrides[item.id] == name or overrides[item.resource] == name) then
+            return true
+        end
+    end
+    return false
 end
 
 function Utils.FindCatalog(id)

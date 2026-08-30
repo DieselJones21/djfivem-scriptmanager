@@ -16,6 +16,103 @@ Catalog = {
         actions = {},
     },
     {
+        id = 'jg-mechanic',
+        resource = 'jg-mechanic',
+        alts = { 'jg-mechanics' },
+        label = 'JG Mechanic',
+        tag = 'The 305',
+        category = 'vehicles',
+        icon = 'wrench',
+        featured = true,
+        description = 'Mechanic tablet, shop admin, and admin vehicle repair.',
+        actions = {
+            { id = 'tablet', label = 'Open mechanic tablet', hint = '/tablet', command = 'tablet' },
+            { id = 'admin', label = 'Mechanic admin', hint = '/mechanicadmin', command = 'mechanicadmin' },
+            { id = 'vfix', label = 'Fix current vehicle', hint = '/vfix', command = 'vfix' },
+        },
+    },
+    {
+        id = 'jg-garages',
+        resource = 'jg-advancedgarages',
+        alts = { 'jg-garages', 'jg-advanced-garages' },
+        label = 'JG Garages',
+        tag = 'The 305',
+        category = 'vehicles',
+        icon = 'car',
+        featured = true,
+        description = 'Impound, plates, job/gang garages, and owned-vehicle admin tools.',
+        actions = {
+            { id = 'impound', label = 'Impound current vehicle', hint = '/iv', command = 'iv' },
+            { id = 'vplate', label = 'Change vehicle plate', hint = '/vplate', command = 'vplate' },
+            { id = 'admincar', label = 'Add current vehicle to garage', hint = '/admincar', command = 'admincar' },
+            { id = 'private', label = 'Private garage creator', hint = '/privategarages', command = 'privategarages' },
+            { id = 'dvdb', label = 'Delete owned vehicle (DB)', hint = '/dvdb', command = 'dvdb' },
+            {
+                id = 'vreturn',
+                label = 'Return left-out vehicle',
+                hint = '/vreturn [plate]',
+                command = 'vreturn {plate}',
+                fields = {
+                    { name = 'plate', type = 'plate', label = 'Plate' },
+                },
+            },
+            {
+                id = 'setjob',
+                label = 'Move to job garage',
+                hint = '/setjobvehicle [job] [grade]',
+                command = 'setjobvehicle {job} {grade}',
+                fields = {
+                    { name = 'job', type = 'text', label = 'Job name', max = 32 },
+                    { name = 'grade', type = 'number', label = 'Min grade', min = 0, max = 100, default = 0 },
+                },
+            },
+            {
+                id = 'removejob',
+                label = 'Remove from job garage',
+                hint = '/removejobvehicle [id]',
+                command = 'removejobvehicle {player}',
+                fields = {
+                    { name = 'player', type = 'player', label = 'New owner' },
+                },
+            },
+            {
+                id = 'setgang',
+                label = 'Move to gang garage',
+                hint = '/setgangvehicle [gang] [grade]',
+                command = 'setgangvehicle {gang} {grade}',
+                fields = {
+                    { name = 'gang', type = 'text', label = 'Gang name', max = 32 },
+                    { name = 'grade', type = 'number', label = 'Min grade', min = 0, max = 100, default = 0 },
+                },
+            },
+            {
+                id = 'removegang',
+                label = 'Remove from gang garage',
+                hint = '/removegangvehicle [id]',
+                command = 'removegangvehicle {player}',
+                fields = {
+                    { name = 'player', type = 'player', label = 'New owner' },
+                },
+            },
+        },
+    },
+    {
+        id = 'jg-dealerships',
+        resource = 'jg-dealerships',
+        alts = { 'jg-dealership', 'jg-advanceddealerships' },
+        label = 'JG Dealerships',
+        tag = 'The 305',
+        category = 'vehicles',
+        icon = 'key',
+        featured = true,
+        description = 'In-game dealer admin, stock, locations, and finance tools.',
+        actions = {
+            { id = 'admin', label = 'Open dealer admin', hint = '/dealeradmin', command = 'dealeradmin' },
+            { id = 'directsale', label = 'Direct sale', hint = '/directsale', command = 'directsale' },
+            { id = 'finance', label = 'Open my finance', hint = '/myfinance', command = 'myfinance' },
+        },
+    },
+    {
         id = 'djbooth',
         resource = 'djbooth',
         label = 'DJ Booth',
@@ -322,5 +419,11 @@ Catalog = {
 
 CatalogByResource = {}
 for i = 1, #Catalog do
-    CatalogByResource[Catalog[i].resource] = Catalog[i]
+    local item = Catalog[i]
+    CatalogByResource[item.resource] = item
+    if type(item.alts) == 'table' then
+        for a = 1, #item.alts do
+            CatalogByResource[item.alts[a]] = item
+        end
+    end
 end

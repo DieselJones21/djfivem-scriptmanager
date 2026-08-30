@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DJ FiveM Script OS</title>
+    <title>The 305 Command OS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@320;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
     <style>
         html, body { background: transparent !important; pointer-events: none; }
-        body:not(.fivem) { pointer-events: auto; }
+        body:not(.fivem) { pointer-events: auto; background: #05070d !important; }
         #stage { display: none !important; }
         #stage.is-open { display: grid !important; place-items: center; pointer-events: auto; }
         #previewBar { display: none !important; }
@@ -20,12 +20,12 @@
 <body>
     <div class="stage" id="stage" hidden>
         <div class="preview-bar" id="previewBar" hidden>
-            <button data-preview="chrome" class="active">Chrome</button>
-            <button data-preview="lava">Lava</button>
+            <button data-preview="vice305" class="active">305</button>
             <button data-preview="vice">Vice</button>
+            <button data-preview="chrome">Chrome</button>
             <button data-preview="gold">Gold</button>
             <button data-preview="ice">Ice</button>
-            <button data-preview="sunset">Sunset</button>
+            <button data-preview="lava">Lava</button>
         </div>
 
         <div class="tablet" id="tablet">
@@ -35,38 +35,38 @@
                     <span class="mic"></span>
                 </div>
                 <div class="screen" id="screen">
-                    <header class="status">
-                        <span id="clock">12:40</span>
-                        <span class="status-pills">
-                            <span>5G</span>
-                            <span class="battery" id="accessPill">Discord</span>
-                            <button class="status-close" id="statusClose" type="button">Close</button>
-                        </span>
+                    <div class="wallpaper" id="wallpaper"></div>
+                    <header class="topbar">
+                        <div class="top-brand">
+                            <img id="brandLogo" class="wordmark" src="images/logo.png" alt="The 305" />
+                            <div>
+                                <strong id="appName">The 305</strong>
+                                <small id="appTag">Command OS</small>
+                            </div>
+                        </div>
+                        <nav class="tabs" id="nav"></nav>
+                        <div class="top-meta">
+                            <span id="clock">12:40</span>
+                            <span class="pill" id="accessPill">Discord</span>
+                            <button class="status-close" id="statusClose" type="button" aria-label="Close">×</button>
+                        </div>
                     </header>
 
-                    <div class="app" id="app">
-                        <aside class="sidebar">
-                            <div class="brand">
-                                <img id="brandLogo" class="brand-logo" src="images/logo.png" alt="DJ FiveM Scripts" />
-                                <div class="brand-copy">
-                                    <strong id="appName">DJ FiveM</strong>
-                                    <small id="appTag">Scripts</small>
-                                </div>
+                    <div class="workspace">
+                        <section class="page" id="page"></section>
+                        <aside class="dock">
+                            <div class="dock-card" id="statusCard">
+                                <p class="eyebrow">Selected</p>
+                                <h3 id="stackName">No script</h3>
+                                <p id="stackMeta">Pick a resource</p>
+                                <div id="dockControls"></div>
                             </div>
-                            <nav class="nav" id="nav"></nav>
-                            <div class="sidebar-card" id="statusCard">
-                                <p class="eyebrow">Active stack</p>
-                                <h3 id="stackName">No script selected</h3>
-                                <p id="stackMeta">Choose a DJ FiveM resource</p>
+                            <div class="dock-card dock-players">
+                                <p class="eyebrow">Live players</p>
+                                <div id="playerDock"></div>
                             </div>
                         </aside>
-
-                        <main class="main">
-                            <section class="page" id="page"></section>
-                            <footer class="player" id="player"></footer>
-                        </main>
                     </div>
-
                     <div class="home-bar"></div>
                 </div>
             </div>
